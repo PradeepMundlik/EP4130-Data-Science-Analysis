@@ -1,0 +1,35 @@
+
+\section{Introduction}
+
+Bayesian methods are currently experiencing an increase in popularity in the sciences as a means of probabilistic inference (Malakoff, 1999). Among their advantages are the ability to include prior information, the ease of incorporation into a formal decision analytic context, the explicit handling of uncertainty, and the straightforward ability to assimilate new information in contexts such as adaptive management. The Bayesian approach has been shown to be particularly useful for ecological models with poor parameter identifiability (Reichert and Omlin, 1997).
+
+In a modelling application, Bayesian inference concerns the estimation of the values of $p$ unknown model parameters: $\boldsymbol{\theta} = (\theta_1, \ldots, \theta_p)$ about which there may be some prior beliefs. These prior beliefs can be expressed as a probability density function, $\pi(\boldsymbol{\theta})$, and may be interpreted as the probability placed on all possible parameter values before collecting any new data. The dependence of observations $\mathbf{D} = (d_1, \ldots, d_n)$ on the $p$ parameters can be expressed as the probability density function, $L(\mathbf{D} | \boldsymbol{\theta})$. This p.d.f is often referred to as the likelihood function and is used to update the prior beliefs on $\boldsymbol{\theta}$ to account for the new data, $\mathbf{D}$. This updating is performed using Bayes’ theorem which can be expressed:
+
+\begin{equation}
+\pi(\boldsymbol{\theta} | \mathbf{D}) = \frac{\pi(\mathbf{D} | \boldsymbol{\theta})\pi(\boldsymbol{\theta})}{\int \pi(\mathbf{D} | \boldsymbol{\theta})\pi(\boldsymbol{\theta}) d\boldsymbol{\theta}}
+\end{equation}
+
+where $\pi(\mathbf{D} | \boldsymbol{\theta})$ is called the posterior distribution and expresses the probability of the parameter values after observing the new data. Because the denominator in Eq. (1) is a normalizing constant, Bayes’ theorem is often expressed as:
+
+\begin{equation}
+\pi(\boldsymbol{\theta} | \mathbf{D}) \propto \pi(\mathbf{D} | \boldsymbol{\theta})\pi(\boldsymbol{\theta})
+\end{equation}
+
+indicating that the prior expectations are modified by the likelihood function to yield the posterior belief.
+
+Once the posterior distribution is available, any features of $\boldsymbol{\theta}$, such as the marginal distributions or means and variances of the individual $\theta_i$, as well as the predictive distribution of future observations, require integrating over the posterior distribution. For example, the marginal posterior distribution of an individual $\theta_i$, can be calculated as:
+
+\begin{equation}
+\pi(\theta_i | \mathbf{D}) = \int \pi(\boldsymbol{\theta} | \mathbf{D}) d\boldsymbol{\theta}_{-i}
+\end{equation}
+
+where $\boldsymbol{\theta}_{-i}$ represents all $\theta$'s except $\theta_i$.
+
+Most Bayesian inference problems can be succinctly expressed as the expectation of a function of interest, $g(\boldsymbol{\theta})$, evaluated over the posterior distribution:
+
+\begin{equation}
+E[g(\boldsymbol{\theta}) | \mathbf{D}] = \int \pi(\boldsymbol{\theta} | \mathbf{D})g(\boldsymbol{\theta}) d\boldsymbol{\theta}
+\end{equation}
+
+where $E$ denotes the expectation operator.
+

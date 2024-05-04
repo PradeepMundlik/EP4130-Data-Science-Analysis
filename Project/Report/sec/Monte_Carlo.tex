@@ -1,0 +1,167 @@
+\section{Monte Carlo Approach}\label{sec:Monte_Carlo}
+The Monte Carlo method is a broad class of computational algorithms that rely on repeated random sampling to obtain numerical results. Typically used in scenarios where exact solutions are impossible or infeasible, Monte Carlo methods are particularly effective for simulating systems with numerous coupled degrees of freedom, such as fluids, disordered materials, strongly coupled solids, and large assemblies of particles.
+
+First introduced by scientists working on nuclear weapons projects in the 1940s, the term ``Monte Carlo'' was coined due to the method's reliance on randomness, akin to the mechanisms of a roulette wheel in the Monte Carlo Casino. The fundamental principle of Monte Carlo methods is to exploit the law of large numbers by performing a large number of trials and averaging the results to obtain approximate solutions.
+
+In statistical physics and mathematical finance, Monte Carlo methods are used for integrating complex functions, simulating stochastic systems, and solving multidimensional definite integrals. For example, in statistical inference, Monte Carlo techniques facilitate the estimation of posterior distributions where traditional analytical methods fail due to complexity or high dimensionality.
+
+\subsection{The Bayesian Monte Carlo Method}
+
+% The Bayesian Monte Carlo method starts with a prior over the function, \( p(f) \) and makes inferences about \( f \) from a set of samples \( \mathcal{D} = \{(x_i, f(x_i))\}_{i = 1}^n \) giving the posterior distribution \( p(f|\mathcal{D}) \). Under a GP prior the posterior is (an infinite dimensional joint) Gaussian; since the integral eq. (1) is just a linear projection (on the direction defined by \( p(x) \)), the posterior \( p(f, f|\mathcal{D}) \) is also Gaussian, and fully characterized by its mean and variance. The average over functions of eq. (1) is the expectation of the average function:
+
+% \begin{equation}
+% \mathbb{E}_{p(f|\mathcal{D})}[\bar{f}] = \int \int f(x)p(x)p(f|\mathcal{D}) \, dx \, df
+% \end{equation}
+
+% \begin{equation}
+% = \int \left( \int f(x)p(f|\mathcal{D}) \, df \right) p(x) \, dx = \int \bar{f}_{\mathcal{D}}(x)p(x) \, dx,
+% \end{equation}
+
+% where \( \bar{f}_{\mathcal{D}} \) is the posterior mean function. Similarly, for the variance:
+
+% % \begin{equation}
+% % V_{p(f|\mathcal{D})}[\bar{f}] = \int \left( \int f(x)p(x) \, dx \right) - \left( \int f(x')p(x') \, dx' \right)^2 p(f|\mathcal{D}) \, df
+% % \end{equation}
+% \begin{multline}
+%     V_{p(f|\mathcal{D})}[\bar{f}] = \int \left( \int f(x)p(x) \, dx \right) \\
+%     - \left( \int f(x')p(x') \, dx' \right)^2 p(f|\mathcal{D}) \, df
+% \end{multline}
+    
+
+% \begin{equation}
+% = \int \int \int (f(x) - \bar{f})(f(x') - \bar{f}')p(f|\mathcal{D})p(f)p(x)p(x') \, dx \, dx' \, df
+% \end{equation}
+
+% \begin{equation}
+% = \int Cov_p(f(x), f(x'))p(x)p(x') \, dx \, dx',
+% \end{equation}
+
+% where \( Cov_p \) is the posterior covariance. The standard results for the GP model for the posterior mean and covariance are:
+
+% \begin{equation}
+% \bar{f}_{\mathcal{D}}(x) = k(x, \mathcal{X})K^{-1}f,
+% \end{equation}
+
+% \begin{equation}
+% \text{and } Cov_p(f(x), f(x')) = k(x, x') - k(x, \mathcal{X})K^{-1}k(\mathcal{X}, x'),
+% \end{equation}
+
+% where \( k \) and \( f \) are the observed inputs and function values respectively. In general combining eq. (8) with eq. (6-7) may lead to expressions which are difficult to evaluate, but there are several interesting special cases.
+
+% If the density \( p(x) \) and the covariance function eq. (5) are both Gaussian, we obtain analytical results. In detail, if \( p(x) = \mathcal{N}(\mathbf{b}, B) \) and the Gaussian kernels on the data points are \( \mathcal{N}(a_i = x_i), \Lambda = diag(u_1^2, ..., u_w^2) \) then the expectation evaluates to:
+
+% \begin{equation}
+% \mathbb{E}_{p(f|\mathcal{D})}[\bar{f}] = z^T K^{-1}f,
+% \end{equation}
+
+% \begin{equation}
+% z = \omega[\mathbf{A}^{-1}\mathbf{B} + \mathbf{I}]^{-1/2} \exp\left(-0.5(a - b)^T (A + B)^{-1}(a - b)\right)
+% \end{equation}
+% For the variance, we get:
+% \begin{equation}
+% V_{p(f|\mathcal{D})}[\bar{f}] = \omega [2\mathbf{A}^{-1}\mathbf{B} + \mathbf{I}]^{-1/2} - z^T K^{-1}z,
+% \end{equation}
+
+% with \( z \) as defined in eq. (9). Other choices that lead to analytical results include polynomial kernels and mixtures of Gaussians for \( p(x) \).
+The Bayesian Monte Carlo (BMC) method is a probabilistic framework that incorporates prior knowledge and observational data to update the posterior beliefs about a model's parameters. Given a set of observed data \( \mathcal{D} = \{ (x_i, y_i) \}_{i=1}^{N} \), where \( x_i \) are inputs and \( y_i \) are outputs, we are interested in estimating a function \( f \) that explains \( y_i \) given \( x_i \).
+
+Assuming a prior distribution \( p(f) \) over the function space, the posterior distribution of \( f \) given the data \( \mathcal{D} \) is given by Bayes' theorem:
+
+\begin{equation}
+p(f|\mathcal{D}) = \frac{p(\mathcal{D}|f)p(f)}{p(\mathcal{D})},
+\end{equation}
+
+where \( p(\mathcal{D}|f) \) is the likelihood of data under the function \( f \), \( p(f) \) is the prior, and \( p(\mathcal{D}) \) is the evidence, which serves as a normalizing constant.
+
+In BMC, the expectation of a quantity of interest \( Q \) with respect to the posterior \( p(f|\mathcal{D}) \) is estimated as:
+
+\begin{equation}
+\mathbb{E}_{p(f|\mathcal{D})}[Q] = \int Q(f)p(f|\mathcal{D}) df.
+\end{equation}
+
+The integral is approximated using Monte Carlo integration by drawing samples \( \{ f^{(s)} \}_{s=1}^{S} \) from the posterior \( p(f|\mathcal{D}) \) and computing:
+
+\begin{equation}
+\mathbb{E}_{p(f|\mathcal{D})}[Q] \approx \frac{1}{S} \sum_{s=1}^{S} Q(f^{(s)}).
+\end{equation}
+
+This method facilitates the computation of posterior expectations and can be extended to high-dimensional problems where traditional integration methods become infeasible.
+
+\subsection{MCMC}
+
+One technique for Bayesian inference that is commonly used among statisticians is called Markov chain Monte Carlo (MCMC). MCMC is a general methodology that provides a solution to the difficult problem of sampling from a high-dimensional distribution for the purpose of numerical integration. The idea behind MCMC for Bayesian inference is to create a random walk, or Markov process, that has \(\pi(\boldsymbol{\theta}|\mathbf{D})\) as its stationary distribution and then run the process long enough so that the resulting sample closely approximates a sample from \(\pi(\boldsymbol{\theta}|\mathbf{D})\). These samples can be used directly for parameter inference and prediction. For example, Monte Carlo integration estimates \(E[g(\boldsymbol{\theta})|\mathbf{D}]\) by drawing \(n\) samples, \(\boldsymbol{\theta}^{(i)}\), from \(\pi(\boldsymbol{\theta}|\mathbf{D})\) and calculating the mean:
+
+\begin{equation}
+E[g(\boldsymbol{\theta})|\mathbf{D}] = \frac{1}{n}\sum_{i=1}^{n}g(\boldsymbol{\theta}^{(i)}).
+\end{equation}
+
+With independent samples, the law of large numbers ensures that the approximation can be made increasingly accurate by increasing the sample size, \(n\). The result still holds when samples \(\boldsymbol{\theta}^{(i)}\) are not independent, as long as the samples are drawn throughout the support of \(\pi(\boldsymbol{\theta}|\mathbf{D})\) in the correct proportions.
+
+It is worthwhile to note that we only need to know the posterior distribution up to a proportional constant to generate random samples using the Metropolis Hastings algorithm. In other words, we can use the right-hand-side of Eq. (2) for generating posterior samples, without the normalizing constant (the denominator in Eq. (1)). Additionally, using MCMC we can sample from the joint posterior distribution of all parameters, rather than from the marginal parameter distributions. Multidimensional parameter distributions are important in model uncertainty analysis and may be crucial in locating narrow and hard to locate highest probability density regions.
+
+
+\subsubsection*{Hastings Algorithm}
+
+The Metropolis Hastings algorithm can draw samples from any probability distribution with probability density \(P(x)\), provided that we know a function \(f(x)\) proportional to the density \(P\) and the values of \(f(x)\) can be calculated. The requirement that \(f(x)\) must only be proportional to the density, rather than exactly equal to it, makes the Metropolis Hastings algorithm particularly useful, because it removes the need to calculate the density's normalization factor, which is often extremely difficult in practice.
+
+The Metropolis Hastings algorithm generates a sequence of sample values in such a way that, as more and more sample values are produced, the distribution of values more closely approximates the desired distribution. These sample values are produced iteratively, with the distribution of the next sample being dependent only on the current sample value, thus making the sequence of samples into a Markov chain. Specifically, at each iteration, the algorithm proposes a candidate for the next sample value based on the current sample value. Then, with some probability, the candidate is either accepted, in which case the candidate value is used in the next iteration, or it is rejected in which case the candidate value is discarded, and current value is reused in the next iteration. The probability of acceptance is determined by comparing the values of the function \( f(x) \) of the current and candidate sample values with respect to the desired distribution.
+
+On the other hand, most simple rejection sampling methods suffer from the curse of dimensionality, where the probability of rejection increases exponentially as a function of the number of dimensions. Metropolis Hastings, along with other MCMC methods, do not have this problem to such a degree, and thus are often the only solutions available when the number of dimensions of the distribution to be sampled is high. As a result, MCMC methods are often the methods of choice for producing samples from hierarchical Bayesian models and other high-dimensional statistical models used nowadays in many disciplines.
+
+\subsubsection*{A formal derivation}
+
+The purpose of the Metropolis Hastings algorithm is to generate a collection of states according to a desired distribution \(P(x)\). To accomplish this, the algorithm uses a Markov process, which asymptotically reaches a unique stationary distribution \( \pi(x) \) such that \( \pi(x) = P(x) \). 
+
+A Markov process is uniquely defined by its transition probabilities \( P(x' | x) \), the probability of transitioning from any given state \( x \) to any other given state \( x' \). It has a unique stationary distribution \( \pi(x) \) when the following two conditions are met:
+\begin{enumerate}
+    \item Existence of stationary distribution: there must exist a stationary distribution \( \pi(x) \). A sufficient but not necessary condition is detailed balance, which requires that each transition \( x \rightarrow x' \) is reversible: for every pair of states \( x, x' \), the probability of being in state \( x \) and transitioning to state \( x' \) must be equal to the probability of being in state \( x' \) and transitioning to state \( x \), \( \pi(x)P(x' | x) = \pi(x')P(x | x') \).
+    \item Uniqueness of stationary distribution: the stationary distribution \( \pi(x) \) must be unique. This is guaranteed by ergodicity of the Markov process, which requires that every state must (1) be aperiodic---the system does not return to the same state at fixed intervals; and (2) be positive recurrent---the expected number of steps for returning to the same state is finite.
+\end{enumerate}
+
+The Metropolis Hastings algorithm involves designing a Markov process (by constructing transition probabilities) that fulfills the two above conditions, such that its stationary distribution \( \pi(x) \) is chosen to be \( P(x) \). The derivation of the algorithm starts with the condition of detailed balance:
+\[
+P(x' | x) \pi(x) = P(x | x') \pi(x'),
+\]
+which is re-written as
+\[
+\frac{P(x' | x)}{P(x | x')} = \frac{\pi(x')}{\pi(x)}.
+\]
+
+The approach is to separate the transition in two sub-steps; the proposal and the acceptance-rejection. The proposal distribution \( g(x' | x) \) is the conditional probability of proposing a state \( x' \) given \( x \), and the acceptance distribution \( A(x', x) \) is the probability to accept the proposed state \( x' \). The transition probability can be written as the product of them:
+\[
+P(x' | x) = g(x' | x) A(x', x),
+\]
+Inserting this relation in the previous equation, we have
+\[
+\frac{A(x', x)}{A(x, x')} = \frac{P(x') g(x | x')}{P(x) g(x' | x)}.
+\]
+
+The next step in the derivation is to choose an acceptance ratio that fulfills the condition above. One common choice is the Metropolis choice:
+\[
+A(x', x) = \min \left( 1, \frac{P(x') g(x | x')}{P(x) g(x' | x)} \right).
+\]
+
+For this Metropolis acceptance ratio \( A \), either \( A(x', x) = 1 \) or \( A(x, x') = 1 \), and either way, the condition is satisfied.
+
+The Metropolis Hastings algorithm can thus be written as follows:
+\begin{enumerate}
+    \item Initialise
+    \begin{enumerate}
+        \item Pick an initial state \( x_0 \).
+        \item Set \( t = 0 \).
+    \end{enumerate}
+    \item Iterate
+    \begin{enumerate}
+        \item Generate a random candidate state \( x' \) according to \( g(x' | x_t) \).
+        \item Calculate the acceptance probability \( A(x', x_t) = \min \left( 1, \frac{P(x') g(x_t | x')}{P(x_t) g(x' | x_t)} \right) \).
+        \item Accept or reject:
+        \begin{enumerate}
+            \item Generate a uniform random number \( u \) from [0, 1].
+            \item If \( u \leq A(x', x_t) \), then accept the new state and set \( x_{t+1} = x' \).
+            \item If \( u > A(x', x_t) \), then reject the new state and copy the old state forward \( x_{t+1} = x_t \).
+        \end{enumerate}
+        \item Increment: set \( t = t + 1 \).
+    \end{enumerate}
+\end{enumerate}
+
+Provided that specified conditions are met, the empirical distribution of saved states \( x_0, \ldots, x_T \) will approach \( P(x) \). The number of iterations (\( T \)) required to effectively estimate \( P(x) \) depends on the number of factors, including the relationship between \( P(x) \) and the proposal distribution and the desired accuracy of estimation.
